@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+# FFsilencer - a Bash script by Kyle Anthony Williams
+# Use FFmpeg to quickly remove the silent portions of any video.
+
+USAGE="
+usage: ffsilencer IN OUT [THRESH] [DURATION]
+
+Use FFmpeg to quickly remove the silent portions of any video.
+
+positional arguments:
+ IN          path to input file
+ OUT         path to output file
+optional arguments:
+ THRESH      how loud the audio needs to be before it's cut out in dB (default: 50)
+ DURATION    how long the silnece needs to be in order to be cut out (default: 1)
+"
 
 # Recreate temporary filter complex
 rm -f /tmp/filter_complex.ff
@@ -13,6 +28,7 @@ DURATION=${4:-1}
 # Parse silence end and length timestamps from audio of video
 # Thanks Donald Feury!
 # https://blog.feurious.com/automatically-trim-silence-from-video-with-ffmpeg-and-python
+# TODO: Use ametadata instead: https://ffmpeg.org/ffmpeg-filters.html#Examples-142
 UNSEPARATED_TIMESTAMPS=$(ffmpeg -hide_banner -vn -i "$IN" -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | \
 	grep "silence_end" | \
 	awk '{print $5 " " $8}')
