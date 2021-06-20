@@ -48,4 +48,4 @@ pairs_str=$(printf '%s' "${pairs[@]}")
 echo "${pairs_str}concat=n=$i:v=1:a=1[outv][outa]" >> /tmp/filter_complex.ff
 
 # Apply filter complex to input
-ffmpeg -v verbose -hide_banner -i $IN -filter_complex_script /tmp/filter_complex.ff -map [outv] -map [outa] $OUT
+ffmpeg -hide_banner -i $IN -filter_complex_script /tmp/filter_complex.ff -map [outv] -map [outa] $OUT
