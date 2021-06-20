@@ -13,7 +13,7 @@ DURATION=$4
 # Parse silence end and length timestamps from audio of video
 # Thanks Donald Feury!
 # https://blog.feurious.com/automatically-trim-silence-from-video-with-ffmpeg-and-python
-UNSEPARATED_TIMESTAMPS=$(ffmpeg -hide_banner -vn -i $IN -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | \
+UNSEPARATED_TIMESTAMPS=$(ffmpeg -hide_banner -vn -i "$IN" -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | \
 	grep "silence_end" | \
 	awk '{print $5 " " $8}')
 
@@ -47,4 +47,4 @@ pairs_str=$(printf '%s' "${pairs[@]}")
 echo "${pairs_str}concat=n=$i:v=1:a=1[outv][outa]" >> /tmp/filter_complex.ff
 
 # Apply filter complex to input
-ffmpeg -hide_banner -i $IN -filter_complex_script /tmp/filter_complex.ff -map [outv] -map [outa] $OUT
+ffmpeg -hide_banner -i "$IN" -filter_complex_script /tmp/filter_complex.ff -map [outv] -map [outa] "$OUT"
