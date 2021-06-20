@@ -32,8 +32,7 @@ while read -r line; do
 	length=${array[1]}
 
     # Get start of silence
-	# Replace with this: https://www.shell-tips.com/bash/math-arithmetic-calculation/#using-the-printf-builtin-command
-	start=$(node -p "$end - $length")
+	start=$(awk "BEGIN { printf $end - $length }")
 
 	# Append filter context with new trim filters
 	echo "[0:v]trim=start=$current_time:end=$start,setpts=PTS-STARTPTS,format=yuv420p[${i}v];[0:a]atrim=start=$current_time:end=$start,asetpts=PTS-STARTPTS[${i}a];" >> /tmp/filter_complex.ff
