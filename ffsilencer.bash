@@ -11,9 +11,14 @@ positional arguments:
  IN          path to input file
  OUT         path to output file
 optional arguments:
- THRESH      how loud the audio needs to be before it's cut out in dB (default: 50)
- DURATION    how long the silnece needs to be in order to be cut out (default: 1)
+ THRESH      how loud the audio needs to be before it's cut out (default: -50dB)
+ DURATION    how long the silnece needs to be in order to be cut out (default: 1 second)
 "
+
+if [ $# -eq 0 ]; then
+    printf "$USAGE"
+    exit 1
+fi
 
 # Recreate temporary filter complex
 rm -f /tmp/filter_complex.ff
@@ -22,16 +27,19 @@ touch /tmp/filter_complex.ff
 # Argument parsing
 IN=$1
 OUT=$2
-THRESH=${3:-50}
+THRESH=${3:-50dB}
 DURATION=${4:-1}
 
 # Parse silence end and length timestamps from audio of video
 # Thanks Donald Feury!
 # https://blog.feurious.com/automatically-trim-silence-from-video-with-ffmpeg-and-python
-# TODO: Use ametadata instead: https://ffmpeg.org/ffmpeg-filters.html#Examples-142
-UNSEPARATED_TIMESTAMPS=$(ffmpeg -hide_banner -vn -i "$IN" -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | \
-	grep "silence_end" | \
-	awk '{print $5 " " $8}')
+UNSEPARATED_TIMESTAMPS=$(ffmpeg -hide_banner -vn -i "$IN" -af "silencedetect=noise=${THRESH}:duration=${DURATION},ametadata=mode=print:file=-" -f null - | \
+	grep -e end -e duration | \
+	# Concatenate every two lines
+	# lafvi metadata key-value pairs are separated with '='
+	# Thanks, Dimitre Radoulov for the neat awk trick!
+	# https://stackoverflow.com/a/3196948
+	awk --field-separator='=' '!(NR%2){print end " " $2 }{end=$2}')
 
 # Create FFmpeg filter complex through looping through timestamps
 # Thanks shawnblais and Hashim Aziz!
@@ -41,7 +49,7 @@ pairs=()
 current_time=0
 while read -r line; do
 	let i+=1
-	
+
 	# Separate silence end and silence length
 	array=($line)
 	end=${array[0]}
