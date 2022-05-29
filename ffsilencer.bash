@@ -27,7 +27,7 @@ touch /tmp/filter_complex.ff
 # Argument parsing
 IN=$1
 OUT=$2
-THRESH=${3:-50dB}
+THRESH=${3:-"-50dB"}
 DURATION=${4:-1}
 
 # Parse silence end and length timestamps from audio of video
