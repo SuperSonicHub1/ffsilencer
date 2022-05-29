@@ -12,12 +12,13 @@ positional arguments:
  IN          path to input file
  OUT         path to output file
 optional arguments:
- THRESH      how loud the audio needs to be before it's cut out in dB (default: 50)
- DURATION    how long the silnece needs to be in order to be cut out (default: 1)
+ THRESH      how loud the audio needs to be before it's cut out (default: -50dB)
+ DURATION    how long the silence needs to be in order to be cut out (default: 1 second)
 ```
 
 ## Credits
 Inspired by [carykh/jumpcutter](https://github.com/carykh/jumpcutter). We shouldn't need Python to do such a simple task!
+
 Takes Bash code from ["Automatically trim silence from video with ffmpeg and python" by Donald Feury](https://blog.feurious.com/automatically-trim-silence-from-video-with-ffmpeg-and-python) and FFmpeg filter code from an answer to ["How can I remove multiple segments from a video using FFmpeg?" by shawnblais and Hashim Aziz](https://superuser.com/questions/681885/how-can-i-remove-multiple-segments-from-a-video-using-ffmpeg/1498811#1498811).
 
 ## License
