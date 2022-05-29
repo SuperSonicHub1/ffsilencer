@@ -12,7 +12,7 @@ positional arguments:
  OUT         path to output file
 optional arguments:
  THRESH      how loud the audio needs to be before it's cut out (default: -50dB)
- DURATION    how long the silnece needs to be in order to be cut out (default: 1 second)
+ DURATION    how long the silence needs to be in order to be cut out (default: 1 second)
 "
 
 if [ $# -eq 0 ]; then
